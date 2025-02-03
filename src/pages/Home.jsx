@@ -1,6 +1,8 @@
-import { createSignal } from "solid-js";
+export default function Pocetna(props) {
+    return (
+        <>
+            <h1></h1>   
+        </>
+    );
 
-export default function Dashboard() {
-
-    <div>Pozdrav</div>
 }
