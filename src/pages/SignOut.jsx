@@ -15,7 +15,7 @@ export default function SignOut() {
     return (
         <>
             <Show when={result()}>
-                <div class="bg-slate-300 p-4 rounded">
+                <div class="bg-emerald-700 p-4 rounded">
                     {result()}
                 </div>
             </Show>
