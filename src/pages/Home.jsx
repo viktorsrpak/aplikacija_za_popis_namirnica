@@ -1,43 +1,67 @@
-import { createEffect, createSignal } from "solid-js";
-import { useAuth } from "../components/AuthProvider";
+import { createEffect, createSignal, Show, For } from "solid-js";
 import { supabase } from "../services/supabase";
-import { A } from "@solidjs/router";
+import { useAuth } from "../components/AuthProvider";
+import { useNavigate } from "@solidjs/router";
 
-export default function Home(props) {
-    const session = useAuth();
+export default function Home() {
+  const session = useAuth();
+  const navigate = useNavigate();
 
-    const [popisi, setPopisi] = createSignal(null);
+  const [popisi, setPopisi] = createSignal([]);
+  const [error, setError] = createSignal("");
 
-    createEffect(async () => {
-        if (session()) {
-            const { data, error } = await supabase
-                .from("popis_namirnica")
-                .select()
-                .eq("user_id", session().user.id);
+  createEffect(async () => {
+    await loadPopisi();
+  });
 
-            if (!error) {
-                setPopisi(data);
-            }
-        }
-    });
+  async function loadPopisi() {
+    if (session()) {
+      const { data, error } = await supabase
+        .from("popis_namirnica")
+        .select("*")
+        .eq("user_id", session().user.id);
 
-    return (
-        <>
-            <Show when={!session()}>
-                <div class="bg-red-400 text-white text-3xl p-10 rounded">Morate se prijaviti da biste vidjeli svoje popise!</div>
-            </Show>
-            <Show when={session() && popisi()}>
-                <For each={popisi()} fallback={<div>Nema popisa.</div>}>
-                    {(item) => (
-                        <div class="flex flex-col gap-2 items-end bg-blue-400 text-white p-2 rounded mb-5">
-                            <div class="place-self-start text-xl">{item.naziv}</div>
-                            <A href={`/popis/${item.id}`} class="bg-white text-blue-400 p-2 rounded text-sm">
-                                Prikaži
-                            </A>
-                        </div>
-                    )}
-                </For>
-            </Show>
-        </>
-    );
+      if (error) {
+        setError("Došlo je do pogreške pri dohvaćanju popisa.");
+      } else {
+        setPopisi(data);
+      }
+    }
+  }
+
+  function formatDate(date) {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    return new Date(date).toLocaleDateString("hr-HR", options);
+  }
+
+  return (
+    <>
+      <Show when={session() && popisi()}>
+        <For each={popisi()} fallback={<div>Nema popisa.</div>}>
+          {(item, index) => (
+            <div
+              class={`flex items-center justify-between bg-gray-700 text-white p-5 rounded mb-2 ${
+                index() === 0 ? "mt-24" : "mt-0"
+              } w-full`}
+            >
+              <div class="flex flex-col">
+                <div class="text-xl">{item.naziv}</div>
+                <div>{formatDate(item.created_at)}</div>
+              </div>    
+              <button
+                class="bg-gray-600 text-white p-2 rounded text-sm"
+                onClick={() => navigate(`/namirnice/${item.id}`)}
+              >
+                Otvori popis
+              </button>
+            </div>
+          )}
+        </For>
+      </Show>
+
+      <Show when={error()}>
+        <div class="bg-red-400 text-white p-2 rounded my-5">{error()}</div>
+      </Show>
+    </>
+  );
 }

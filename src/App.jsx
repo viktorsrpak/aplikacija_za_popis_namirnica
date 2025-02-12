@@ -49,6 +49,8 @@ function Layout(props) {
               </A>
             </Show>
 
+            
+
             <Show when={!session()}>
               <A href="/signin" class="bg-sky-700 p-2 rounded hover:bg-sky-500">
                 Prijava

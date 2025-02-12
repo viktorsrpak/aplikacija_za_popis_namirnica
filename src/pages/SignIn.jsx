@@ -22,43 +22,56 @@ export default function SignIn(props) {
             setResult("Dogodila se greška prilikom prijave!");
         } else {
             setResult("Prijava je uspjela.");
-            navigate("/", {replace: true});
+            navigate("/", { replace: true });
         }
     }
 
     return (
         <>
             <Show when={result()}>
-                <div class="bg-slate-300 p-4 rounded">
+                <div class="bg-red-500 text-white p-4 rounded mb-4">
                     {result()}
                 </div>
             </Show>
 
-            <form onSubmit={formSubmit}>
-                <div class="p-2 flex flex-col gap-1">
-                    <label for="email">E-mail adresa:</label>
-                    <input type="email" id="email" name="email" required />
-                </div>
+            <div class="flex justify-center items-center min-h-screen">
+                <div class="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-center text-white mb-6">Prijava</h2>
 
-                <div class="p-2 flex flex-col gap-1">
-                    <label for="password">Zaporka:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                        minLength="6"
-                    />
-                </div>
+                    <form onSubmit={formSubmit} class="space-y-4">
+                        <div class="flex flex-col">
+                            <label for="email" class="text-sm font-medium text-gray-300">E-mail adresa:</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                class="border border-gray-600 bg-gray-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
 
-                <div class="p-2 flex flex-col gap-1">
-                    <input
-                        type="submit"
-                        value="Pošalji"
-                        class="bg-slate-600 text-white p-2 rounded"
-                    />
+                        <div class="flex flex-col">
+                            <label for="password" class="text-sm font-medium text-gray-300">Zaporka:</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                required
+                                minLength="6"
+                                class="border border-gray-600 bg-gray-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div class="flex flex-col">
+                            <input
+                                type="submit"
+                                value="Prijava"
+                                class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </>
     );
 }
