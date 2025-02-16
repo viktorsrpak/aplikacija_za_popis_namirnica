@@ -100,6 +100,19 @@ export default function Namirnice(props) {
     }
   }
 
+  async function toggleKupljeno(namirnicaId, kupljeno) {
+    const { error } = await supabase
+      .from("namirnice")
+      .update({ kupljeno: !kupljeno })
+      .eq("id", namirnicaId);
+
+    if (error) {
+      alert("Došlo je do pogreške pri ažuriranju stanja namirnice.");
+    } else {
+      await loadNamirnice();
+    }
+  }
+
   return (
     <>
       <Show when={popis()}>
@@ -168,7 +181,8 @@ export default function Namirnice(props) {
                       </span>
                       <input
                         type="checkbox"
-                        defaultChecked={item.kupljeno}
+                        checked={item.kupljeno}
+                        onChange={() => toggleKupljeno(item.id, item.kupljeno)}
                         className="checkbox checkbox-primary"
                       />
                     </label>
