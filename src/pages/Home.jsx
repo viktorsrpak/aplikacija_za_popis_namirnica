@@ -15,7 +15,7 @@ export default function Home() {
     await loadPopisi();
 
     if (session()) {
-      showNotification("Uspješno ste se prijavili!", "success", 3000);
+      showNotification("Uspješno ste se prijavili!", "success", 1000);
     }
   });
 
