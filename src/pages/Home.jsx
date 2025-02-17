@@ -22,7 +22,7 @@ export default function Home() {
   async function loadPopisi() {
     if (session()) {
       const { data, error } = await supabase
-        .from("popis_namirnica")
+        .from("naziv_popisa")
         .select("*")
         .eq("user_id", session().user.id);
 

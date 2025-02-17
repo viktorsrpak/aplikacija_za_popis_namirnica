@@ -24,7 +24,7 @@ export default function Popisi() {
     }
 
     const { error } = await supabase
-      .from("popis_namirnica")
+      .from("naziv_popisa")
       .insert({
         naziv: naziv,
         user_id: user_id

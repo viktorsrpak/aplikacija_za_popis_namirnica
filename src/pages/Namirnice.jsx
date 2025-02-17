@@ -14,7 +14,7 @@ export default function Namirnice(props) {
 
   onMount(async () => {
     const { data, error } = await supabase
-      .from("popis_namirnica")
+      .from("naziv_popisa")
       .select()
       .eq("id", params.id);
     if (error) return;
@@ -70,7 +70,7 @@ export default function Namirnice(props) {
         alert("Došlo je do pogreške pri brisanju namirnica.");
       } else {
         const { error: popisError } = await supabase
-          .from("popis_namirnica")
+          .from("naziv_popisa")
           .delete()
           .eq("id", popis().id);
 
