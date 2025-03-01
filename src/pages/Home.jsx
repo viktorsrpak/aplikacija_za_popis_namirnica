@@ -29,9 +29,29 @@ export default function Home() {
       if (error) {
         setError("Došlo je do pogreške pri dohvaćanju popisa.");
       } else {
-        setPopisi(data);
+        const popisiSPotpunoscu = await Promise.all(
+          data.map(async (popis) => {
+            const jePotpun = await provjeraPotpunosti(popis.id);
+            return { ...popis, jePotpun };
+          })
+        );
+        setPopisi(popisiSPotpunoscu);
       }
     }
+  }
+
+  async function provjeraPotpunosti(popisId) {
+    const { data, error } = await supabase
+      .from("namirnice")
+      .select("kupljeno")
+      .eq("popis_id", popisId);
+
+    if (error) {
+      console.error("Greška pri dohvaćanju namirnica:", error);
+      return false;
+    }
+
+    return data.every((item) => item.kupljeno);
   }
 
   async function showNotification(message, type, trajanje) {
@@ -72,6 +92,16 @@ export default function Home() {
               <div class="flex flex-col">
                 <div class="text-xl">{item.naziv}</div>
                 <div>{formatDate(item.created_at)}</div>
+                <Show when={item.jePotpun}>
+                  <div class="text-green-400 text-sm mt-1">
+                    Sve namirnice iz ovog popisa su označene kao kupljene
+                  </div>
+                </Show>
+                <Show when={!item.jePotpun}>
+                  <div class="text-yellow-400 text-sm mt-1">
+                    Neke namjernice iz ovog popisa nisu označene kao kupljene!
+                  </div>
+                </Show>
               </div>
               <button
                 class="bg-gray-600 text-white p-2 rounded text-sm"
